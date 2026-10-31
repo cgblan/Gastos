@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Gastos rápidos"
+description = "Registro personal de gastos pensado para móvil, con captura en un toque, métricas, historial y copias CSV guardadas localmente."
+version = "1.0.0"
+id = "artifacts/gastos-rapidos"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22694
+
+[services.development]
+run = "pnpm --filter @workspace/gastos-rapidos run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/gastos-rapidos", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/gastos-rapidos/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22694"
+BASE_PATH = "/"
