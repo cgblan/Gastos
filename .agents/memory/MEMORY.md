@@ -1,0 +1,1 @@
+- [Primer acceso y privacidad](first-launch-auth.md) — no pedir inicio de sesión hasta abrir la PWA instalada por primera vez; los gastos deben quedar separados por cuenta.
