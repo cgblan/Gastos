@@ -52,10 +52,11 @@
     .shell { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 38px 0 64px; }
     .masthead { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
     .bank-balance-bar {
-      position:sticky; top:0; z-index:4; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px;
+      position:sticky; top:env(safe-area-inset-top); z-index:4; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px;
       margin:0 0 15px; padding:9px 11px; border:1px solid rgba(228,226,216,.9); border-radius:16px;
       background:rgba(255,254,249,.94); box-shadow:0 8px 20px rgba(37,59,48,.07); backdrop-filter:blur(12px);
     }
+    .balance-hint { grid-column:1 / -1; margin:-2px 4px 0; color:var(--muted); font-size:9px; line-height:1.35; }
     .bank-balance-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; min-width:0; }
     .balance-item { display:grid; gap:3px; min-width:0; padding:2px 7px; border-right:1px solid var(--line); }
     .balance-item:last-child { border-right:0; }
@@ -123,6 +124,16 @@
       background:#fbfaf6; color:var(--ink); font-size:13px;
     }
     .note-input::placeholder { color:#a4aca3; }
+    .expense-date-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:19px; }
+    .expense-date-row .field-label { margin:0; }
+    .expense-date-control { position:relative; min-height:40px; }
+    .expense-date-button {
+      display:flex; align-items:center; gap:8px; min-height:40px; padding:0 12px; border:1px solid var(--line); border-radius:11px;
+      color:var(--green); background:#fbfaf6; font-size:12px; font-weight:800; white-space:nowrap;
+    }
+    .expense-date-button svg { width:15px; height:15px; flex:none; }
+    .expense-date-control:focus-within .expense-date-button { outline:3px solid rgba(220,114,88,.55); outline-offset:3px; }
+    .expense-date-native { position:absolute; inset:0; z-index:2; width:100%; height:100%; opacity:0; cursor:pointer; }
     .save-button {
       display:flex; align-items:center; justify-content:center; gap:11px; width:100%; min-height:57px; margin-top:23px;
       border:0; border-radius:15px; color:#fffaf0; background:var(--coral); font-size:15px; font-weight:800;
@@ -282,6 +293,7 @@
       .balance-value { font-size:10px; }
       .income-quick-button { padding-inline:6px; font-size:9px; }
       .opening-balance-link { font-size:8px; }
+      .expense-date-button { min-height:38px; padding-inline:10px; }
     }
     @media (max-width: 390px) {
       .shell { width:calc(100% - 22px); }
@@ -322,6 +334,7 @@
         <button class="income-quick-button" type="button" id="open-income-dialog">+ Ingreso</button>
         <button class="opening-balance-link" type="button" id="open-opening-balances">Saldo inicial</button>
       </div>
+      <small class="balance-hint" id="balance-hint" hidden>Introduce el saldo actual de cada cuenta para calcular el saldo real.</small>
     </section>
 
     <div class="main-grid" id="main-grid">
@@ -352,7 +365,17 @@
         </div>
         <div class="category-list" id="category-choices" role="group" aria-labelledby="category-label" data-testid="group-categories"></div>
 
-        <label class="field-label" for="note">Nota <span style="font-weight:500;letter-spacing:0;text-transform:none">(opcional)</span></label>
+        <div class="expense-date-row">
+          <label class="field-label" for="expense-date">Fecha del gasto</label>
+          <div class="expense-date-control">
+            <button class="expense-date-button" type="button" aria-hidden="true" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M3.5 9.5h17"/></svg>
+              <span id="expense-date-label">Hoy</span>
+            </button>
+            <input class="expense-date-native" id="expense-date" name="expense-date" type="date" aria-label="Elegir fecha del gasto" required data-testid="input-expense-date">
+          </div>
+        </div>
+        <label class="field-label" for="note">Concepto <span style="font-weight:500;letter-spacing:0;text-transform:none">(opcional)</span></label>
         <input class="note-input" id="note" name="note" type="text" maxlength="100" placeholder="¿En qué se fue?" autocomplete="off" data-testid="input-note">
         <button class="save-button" type="submit" data-testid="button-save-expense"><span>Guardar gasto</span><span class="save-arrow" aria-hidden="true">→</span></button>
         <div class="cycle-control">
@@ -505,7 +528,7 @@
   <dialog class="app-dialog" id="opening-balances-dialog" aria-labelledby="opening-balances-title">
     <div class="dialog-card">
       <h2 id="opening-balances-title">Saldos iniciales</h2>
-      <p>Indica el saldo de partida de cada cuenta. Los gastos se restan y los ingresos se suman desde ese importe.</p>
+      <p>Indica el saldo actual de cada cuenta. A partir de ahora, los movimientos que registres modificarán ese saldo; el historial anterior no se volverá a descontar.</p>
       <form class="dialog-form" id="opening-balance-form">
         <div class="dialog-fields">
           <label class="edit-field" for="opening-santander">Santander (€)<input type="number" id="opening-santander" step="0.01" inputmode="decimal" required></label>
@@ -524,7 +547,7 @@
   <script>
     (() => {
       "use strict";
-      const KEYS = { expenses: "gastos-rapidos-expenses-v1", incomes: "gastos-rapidos-incomes-v1", categories: "gastos-rapidos-categories-v1", pockets: "gastos-rapidos-pockets-v1", periodStart: "gastos-rapidos-period-start-v1", openingBalances: "gastos-rapidos-opening-balances-v1" };
+      const KEYS = { expenses: "gastos-rapidos-expenses-v1", incomes: "gastos-rapidos-incomes-v1", categories: "gastos-rapidos-categories-v1", pockets: "gastos-rapidos-pockets-v1", periodStart: "gastos-rapidos-period-start-v1", openingBalances: "gastos-rapidos-opening-balances-v1", balanceStartedAt: "gastos-rapidos-balance-started-at-v1", balanceConfigured: "gastos-rapidos-balance-configured-v1" };
       const defaults = { categories: ["Alimentación", "Ocio", "Transporte", "Hogar", "Salud", "Otros"], pockets: ["General", "Súper", "Ocio", "Viajes"] };
       const banks = ["Santander", "Bankinter", "Revolut"];
       const incomeCategories = ["Nómina", "Paga extra", "Otros"];
@@ -548,6 +571,14 @@
         const value = Number(openingBalances[bank]);
         openingBalances[bank] = Number.isFinite(value) ? value : 0;
       });
+      let balanceStartedAt = new Date().toISOString();
+      let balancesConfigured = false;
+      try {
+        const storedStart = localStorage.getItem(KEYS.balanceStartedAt);
+        if (storedStart && Number.isFinite(Date.parse(storedStart))) balanceStartedAt = storedStart;
+        else localStorage.setItem(KEYS.balanceStartedAt, balanceStartedAt);
+        balancesConfigured = localStorage.getItem(KEYS.balanceConfigured) === "true";
+      } catch (_) {}
       let categories = safeRead(KEYS.categories, defaults.categories).filter(v => typeof v === "string" && v.trim()).slice(0, 40);
       let pockets = safeRead(KEYS.pockets, defaults.pockets).filter(v => typeof v === "string" && v.trim()).slice(0, 40);
       if (!categories.length) categories = defaults.categories.slice();
@@ -599,6 +630,8 @@
         localStorage.setItem(KEYS.pockets, JSON.stringify(pockets));
         localStorage.setItem(KEYS.periodStart, periodStart);
         localStorage.setItem(KEYS.openingBalances, JSON.stringify(openingBalances));
+        localStorage.setItem(KEYS.balanceStartedAt, balanceStartedAt);
+        localStorage.setItem(KEYS.balanceConfigured, String(balancesConfigured));
       };
       const showToast = message => {
         const toast = $("toast");
@@ -696,12 +729,18 @@
       }
       function monthExpenses() { return expensesInRange(periodStart, dateNow()); }
       function sum(list) { return list.reduce((total, item) => total + Number(item.amount), 0); }
+      function balanceIncludes(item) {
+        const createdAt = Date.parse(item.createdAt || "");
+        const startAt = Date.parse(balanceStartedAt);
+        return Number.isFinite(createdAt) && createdAt >= startAt;
+      }
       function bankBalance(bank) {
-        const received = sum(incomes.filter(item => item.bank === bank));
-        const spent = sum(expenses.filter(item => item.bank === bank));
+        const received = sum(incomes.filter(item => item.bank === bank && balanceIncludes(item)));
+        const spent = sum(expenses.filter(item => item.bank === bank && balanceIncludes(item)));
         return Number(openingBalances[bank] || 0) + received - spent;
       }
       function renderBalances() {
+        $("balance-hint").hidden = balancesConfigured;
         $("bank-balances").innerHTML = banks.map(bank => {
           const balance = bankBalance(bank);
           return `<div class="balance-item" aria-label="${escapeHTML(bank)}: ${fmt(balance)}">
@@ -847,6 +886,7 @@
         if (!item) return;
         $("edit-amount").value = String(item.amount);
         $("edit-date").value = localDateKey(item.date);
+        $("edit-date").max = dateNow();
         $("edit-bank").innerHTML = banks.map(bank => `<option value="${escapeHTML(bank)}">${escapeHTML(bank)}</option>`).join("");
         $("edit-bank").value = item.bank;
         const editCategories = [...new Set([...categories, item.category || "Otros"])];
@@ -860,12 +900,22 @@
         $("edit-expense-form").dataset.expenseId = item.id;
         $("edit-expense-dialog").showModal();
       }
+      function renderExpenseDateLabel() {
+        const selected = $("expense-date").value;
+        $("expense-date-label").textContent = selected === dateNow()
+          ? `Hoy · ${formatDateKey(selected, { day:"numeric", month:"short" })}`
+          : formatDateKey(selected);
+      }
       function renderAll() {
         renderBanks(); renderPockets(); renderCategories(); renderSummary(); renderHistory(); renderBalances(); renderIncomeHistory();
         if (!$("analysis-screen").hidden) renderAnalysis();
       }
 
       $("today-date").textContent = new Intl.DateTimeFormat("es-ES", { weekday:"long", day:"numeric", month:"long" }).format(new Date());
+      $("expense-date").value = dateNow();
+      $("expense-date").max = dateNow();
+      renderExpenseDateLabel();
+      $("expense-date").addEventListener("change", renderExpenseDateLabel);
       $("cycle-date-input").max = dateNow();
       $("open-cycle-dialog").addEventListener("click", () => {
         $("cycle-date-input").value = periodStart;
@@ -927,7 +977,7 @@
         const dateValue = $("edit-date").value;
         const bank = $("edit-bank").value;
         const category = $("edit-category").value;
-        if (!Number.isFinite(amount) || amount <= 0 || !isDateKey(dateValue) || !banks.includes(bank) || !category) {
+        if (!Number.isFinite(amount) || amount <= 0 || !isDateKey(dateValue) || dateValue > dateNow() || !banks.includes(bank) || !category) {
           showToast("Revisa el importe, la fecha, la cuenta y la categoría.");
           return;
         }
@@ -984,6 +1034,7 @@
         incomes.push({
           id:idFor(),
           date:date.toISOString(),
+          createdAt:new Date().toISOString(),
           amount:Math.round(amount * 100) / 100,
           bank,
           category,
@@ -1020,6 +1071,8 @@
           nextBalances[bank] = Math.round(amount * 100) / 100;
         }
         openingBalances = nextBalances;
+        balanceStartedAt = new Date().toISOString();
+        balancesConfigured = true;
         persist();
         $("opening-balances-dialog").close();
         renderAll();
@@ -1056,10 +1109,17 @@
         event.preventDefault();
         const amount = Number($("amount").value.replace(",", "."));
         if (!Number.isFinite(amount) || amount <= 0) { $("amount").focus(); showToast("Introduce un importe válido."); return; }
+        const dateValue = $("expense-date").value;
+        if (!isDateKey(dateValue) || dateValue > dateNow()) { $("expense-date").focus(); showToast("Elige una fecha válida de hoy o anterior."); return; }
+        const expenseDate = parseDateKey(dateValue);
+        expenseDate.setHours(12, 0, 0, 0);
         const pocket = selectedBank === "Revolut" ? pockets[Number($("pocket-select").value)] || "General" : "";
-        expenses.push({ id:idFor(), date:new Date().toISOString(), amount:Math.round(amount * 100) / 100, bank:selectedBank, pocket, category:selectedCategory, note:$("note").value.trim() });
+        expenses.push({ id:idFor(), date:expenseDate.toISOString(), createdAt:new Date().toISOString(), amount:Math.round(amount * 100) / 100, bank:selectedBank, pocket, category:selectedCategory, note:$("note").value.trim() });
         persist(); renderAll();
         $("expense-form").reset();
+        $("expense-date").value = dateNow();
+        $("expense-date").max = dateNow();
+        renderExpenseDateLabel();
         selectedBank = "Santander";
         selectedCategory = categories[0] || "Otros";
         renderBanks(); renderCategories();
@@ -1134,7 +1194,7 @@
             if (!id || !date || !Number.isFinite(Date.parse(date)) || !Number.isFinite(amount) || amount <= 0 || !banks.includes(bank)) { invalid++; continue; }
             if (known.has(id)) { skipped++; continue; }
             const dateISO = new Date(date).toISOString();
-            expenses.push({ id, date:dateISO, amount:Math.round(amount*100)/100, bank, pocket:bank === "Revolut" ? get("pocket") || "General" : "", category:get("category") || "Otros", note:get("note").slice(0,100) });
+            expenses.push({ id, date:dateISO, createdAt:new Date().toISOString(), amount:Math.round(amount*100)/100, bank, pocket:bank === "Revolut" ? get("pocket") || "General" : "", category:get("category") || "Otros", note:get("note").slice(0,100) });
             known.add(id); added++;
           }
           persist(); renderAll();
