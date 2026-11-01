@@ -1,1 +1,2 @@
 - [Primer acceso y privacidad](first-launch-auth.md) — no pedir inicio de sesión hasta abrir la PWA instalada por primera vez; los gastos deben quedar separados por cuenta.
+- [Períodos de gasto](spending-periods.md) — el ciclo mensual empieza en el día de cobro, que puede cambiar de un período al siguiente.

@@ -116,6 +116,14 @@
     .save-button:hover { background:#ca644b; transform:translateY(-2px); }
     .save-button:active { transform:translateY(0); }
     .save-arrow { font-size:20px; line-height:0; font-weight:500; }
+    .cycle-control {
+      display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px;
+      padding:12px 13px; border:1px solid var(--line); border-radius:13px; background:#fbfaf6;
+    }
+    .cycle-copy { min-width:0; }
+    .cycle-label { display:block; color:#68796d; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .cycle-value { display:block; margin-top:4px; color:var(--ink); font-size:12px; font-weight:700; }
+    .cycle-control .tool-button { flex:none; }
     .overview { display:flex; flex-direction:column; gap:16px; }
     .metrics { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
     .metric {
@@ -164,6 +172,58 @@
     .empty-mark { display:grid; place-items:center; width:42px; height:42px; margin:0 auto 11px; border-radius:14px; background:var(--mint); color:var(--green); font-size:20px; }
     .empty-state strong { display:block; color:var(--ink); font-size:13px; margin-bottom:4px; }
     .empty-state span { font-size:11px; }
+    .analysis-screen { padding:24px; border-radius:22px; background:var(--card); border:1px solid rgba(228,226,216,.8); box-shadow:var(--shadow); }
+    .analysis-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
+    .analysis-head h1 { margin:7px 0 5px; font-size:clamp(24px,4vw,32px); }
+    .analysis-subtitle { margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
+    .analysis-filters { display:grid; grid-template-columns:1fr 1fr auto; gap:12px; align-items:end; padding:15px; border:1px solid var(--line); border-radius:16px; background:#fbfaf6; }
+    .analysis-filters label, .edit-field { display:grid; gap:7px; color:#68796d; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .analysis-filters input, .edit-field input, .edit-field select {
+      width:100%; min-height:42px; padding:0 11px; border:1px solid var(--line); border-radius:10px;
+      color:var(--ink); background:var(--card); font-size:13px; letter-spacing:normal; text-transform:none;
+    }
+    .analysis-period-note { margin:10px 2px 15px; color:var(--muted); font-size:11px; }
+    .analysis-total {
+      display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:12px; padding:15px 17px;
+      border-radius:15px; color:#fffaf0; background:var(--green);
+    }
+    .analysis-total-label { font-size:11px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; opacity:.82; }
+    .analysis-total-value { font-family:var(--mono); font-size:22px; font-weight:800; white-space:nowrap; }
+    .category-analysis-list { display:grid; gap:9px; }
+    .analysis-category {
+      display:grid; grid-template-columns:minmax(100px,1fr) auto auto 22px; align-items:center; gap:14px;
+      width:100%; padding:14px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefb;
+      color:var(--ink); text-align:left; transition:transform .16s,border-color .16s,background .16s;
+    }
+    .analysis-category:hover { transform:translateY(-1px); border-color:#c4d5c7; background:#fbfdf9; }
+    .analysis-category-name { font-size:13px; font-weight:800; }
+    .analysis-category-metric { display:grid; gap:4px; text-align:right; }
+    .analysis-category-metric span { color:#849086; font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .analysis-category-metric strong { font-family:var(--mono); font-size:12px; white-space:nowrap; }
+    .analysis-chevron { color:var(--coral); font-size:18px; font-weight:700; text-align:right; }
+    .analysis-detail-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:18px 0 10px; }
+    .analysis-detail-head h2 { margin:0; font-size:19px; }
+    .analysis-detail-total { margin-top:5px; color:var(--green); font-family:var(--mono); font-size:14px; font-weight:800; }
+    .analysis-expense-list { list-style:none; margin:0; padding:0; }
+    .analysis-expense {
+      display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:12px;
+      min-height:66px; border-bottom:1px solid #efeee7;
+    }
+    .analysis-expense:last-child { border-bottom:0; }
+    .analysis-expense-main { min-width:0; }
+    .analysis-expense-title { overflow:hidden; color:var(--ink); font-size:12px; font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
+    .analysis-expense-meta { margin-top:5px; color:#849086; font-size:10px; }
+    .analysis-expense-amount { color:var(--green-deep); font-family:var(--mono); font-size:12px; font-weight:800; white-space:nowrap; }
+    dialog.app-dialog { padding:0; border:0; border-radius:21px; background:transparent; max-width:none; max-height:none; }
+    dialog.app-dialog::backdrop { background:rgba(25,45,35,.48); backdrop-filter:blur(3px); }
+    .dialog-card { width:min(460px,calc(100vw - 30px)); max-height:min(88dvh,760px); overflow:auto; padding:24px; border:1px solid var(--line); border-radius:21px; color:var(--ink); background:var(--card); box-shadow:var(--shadow); }
+    .dialog-card h2 { margin:0 0 6px; font-size:20px; }
+    .dialog-card p { margin:0 0 18px; color:var(--muted); font-size:12px; line-height:1.5; }
+    .dialog-form { display:grid; gap:13px; }
+    .dialog-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .dialog-actions { display:flex; justify-content:flex-end; gap:9px; margin-top:4px; }
+    .dialog-actions .tool-button { min-height:42px; }
+    .dialog-actions .save-button { width:auto; min-height:42px; margin:0; padding:0 17px; box-shadow:none; }
     .toast {
       position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); z-index:5;
       transform:translate(-50%, 12px); opacity:0; pointer-events:none; padding:12px 17px;
@@ -184,6 +244,9 @@
       .history-actions { width:100%; }
       .tool-button { flex:1; justify-content:center; }
       .movement { grid-template-columns:minmax(0,1fr) auto 30px; gap:8px; }
+      .analysis-screen { padding:19px 16px; }
+      .analysis-filters { grid-template-columns:1fr 1fr; }
+      .analysis-filters > button { grid-column:1 / -1; }
     }
     @media (max-width: 390px) {
       .shell { width:calc(100% - 22px); }
@@ -194,7 +257,16 @@
       .choice { flex:1; padding-inline:8px; }
       .metric-value { font-size:23px; }
       #amount { font-size:58px; }
+      .cycle-control { align-items:flex-start; flex-direction:column; }
+      .analysis-category { grid-template-columns:minmax(72px,1fr) auto auto 14px; gap:7px; padding:12px 9px; }
+      .analysis-category-metric span { font-size:8px; }
+      .analysis-category-metric strong { font-size:10px; }
+      .analysis-category-name { font-size:11px; }
+      .analysis-expense { grid-template-columns:minmax(0,1fr) auto; }
+      .analysis-expense .tool-button { grid-column:1 / -1; min-height:34px; }
+      .dialog-fields { grid-template-columns:1fr; }
     }
+    [hidden] { display:none !important; }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; } }
   </style>
 </head>
@@ -208,7 +280,7 @@
       <div class="today-label"><span>Hoy</span><strong id="today-date" data-testid="text-today-date"></strong></div>
     </header>
 
-    <div class="main-grid">
+    <div class="main-grid" id="main-grid">
       <form class="entry-card" id="expense-form">
         <p class="eyebrow">Un apunte y listo</p>
         <h1>¿Cuánto has gastado?</h1>
@@ -239,6 +311,13 @@
         <label class="field-label" for="note">Nota <span style="font-weight:500;letter-spacing:0;text-transform:none">(opcional)</span></label>
         <input class="note-input" id="note" name="note" type="text" maxlength="100" placeholder="¿En qué se fue?" autocomplete="off" data-testid="input-note">
         <button class="save-button" type="submit" data-testid="button-save-expense"><span>Guardar gasto</span><span class="save-arrow" aria-hidden="true">→</span></button>
+        <div class="cycle-control">
+          <div class="cycle-copy">
+            <span class="cycle-label">Inicio del período</span>
+            <span class="cycle-value" id="cycle-start-summary"></span>
+          </div>
+          <button class="tool-button" type="button" id="open-cycle-dialog">Cambiar fecha</button>
+        </div>
       </form>
 
       <section class="overview" aria-label="Resumen de gastos">
@@ -249,14 +328,14 @@
             <div class="metric-note" id="today-count" data-testid="value-today-count">0 movimientos</div>
           </article>
           <article class="metric month">
-            <div class="metric-label">Este mes</div>
+            <div class="metric-label">Este período</div>
             <div class="metric-value" id="month-total" data-testid="value-month-total">0,00&nbsp;€</div>
             <div class="metric-note" id="month-count" data-testid="value-month-count">0 movimientos</div>
           </article>
         </div>
         <section class="summary-card" aria-labelledby="summary-title">
           <div class="section-head">
-            <div><h2 id="summary-title">Así va el mes</h2><div class="section-kicker" id="month-caption" data-testid="text-month-caption"></div></div>
+            <div><h2 id="summary-title">Así va el período</h2><div class="section-kicker" id="month-caption" data-testid="text-month-caption"></div></div>
             <div class="month-total" id="summary-total" data-testid="value-summary-total">0,00&nbsp;€</div>
           </div>
           <div class="summary-divider"></div>
@@ -268,10 +347,11 @@
       </section>
     </div>
 
-    <section class="history-card" aria-labelledby="history-title">
+    <section class="history-card" id="history-card" aria-labelledby="history-title">
       <div class="history-head">
         <div><h2 id="history-title">Movimientos recientes</h2><div class="section-kicker">Lo último que has apuntado</div></div>
         <div class="history-actions">
+          <button class="tool-button" type="button" id="open-analysis" data-testid="button-expense-analysis"><span aria-hidden="true">◷</span> Análisis</button>
           <button class="tool-button" type="button" id="export-csv" data-testid="button-export-csv"><span aria-hidden="true">↓</span> Exportar CSV</button>
           <button class="tool-button" type="button" id="import-trigger" data-testid="button-import-csv"><span aria-hidden="true">↑</span> Importar CSV</button>
           <input class="sr-only" type="file" id="import-file" accept=".csv,text/csv" aria-label="Seleccionar archivo CSV" data-testid="input-import-csv">
@@ -279,13 +359,77 @@
       </div>
       <ul class="movement-list" id="movement-list" data-testid="list-movements"></ul>
     </section>
+    <section class="analysis-screen" id="analysis-screen" aria-labelledby="analysis-title" hidden>
+      <div class="analysis-head">
+        <div>
+          <p class="eyebrow">Tus gastos, con contexto</p>
+          <h1 id="analysis-title">Análisis de gastos</h1>
+          <p class="analysis-subtitle">Compara categorías en el período que elijas y revisa cada movimiento.</p>
+        </div>
+        <button class="tool-button" type="button" id="back-to-expenses">← Volver</button>
+      </div>
+      <div class="analysis-filters">
+        <label for="analysis-from">Desde<input type="date" id="analysis-from"></label>
+        <label for="analysis-to">Hasta<input type="date" id="analysis-to"></label>
+        <button class="tool-button" type="button" id="apply-analysis">Aplicar período</button>
+      </div>
+      <div class="analysis-period-note" id="analysis-period-note"></div>
+      <div class="analysis-total">
+        <span class="analysis-total-label">Gasto total del período</span>
+        <strong class="analysis-total-value" id="analysis-total-value">0,00&nbsp;€</strong>
+      </div>
+      <div class="category-analysis-list" id="category-analysis-list"></div>
+      <section id="category-detail" hidden aria-live="polite">
+        <div class="analysis-detail-head">
+          <div>
+            <h2 id="detail-category-title"></h2>
+            <div class="analysis-detail-total" id="detail-category-total"></div>
+          </div>
+          <button class="tool-button" type="button" id="back-to-categories">← Categorías</button>
+        </div>
+        <ul class="analysis-expense-list" id="analysis-expense-list"></ul>
+      </section>
+    </section>
   </main>
+  <dialog class="app-dialog" id="cycle-dialog" aria-labelledby="cycle-dialog-title">
+    <div class="dialog-card">
+      <h2 id="cycle-dialog-title">Inicio del período</h2>
+      <p>Elige el día de cobro que inicia tu seguimiento. Puedes cambiarlo en cada período.</p>
+      <form class="dialog-form" id="cycle-form">
+        <label class="edit-field" for="cycle-date-input">Fecha de inicio<input type="date" id="cycle-date-input" required></label>
+        <div class="dialog-actions">
+          <button class="tool-button" type="button" id="cancel-cycle">Cancelar</button>
+          <button class="save-button" type="submit">Guardar fecha</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <dialog class="app-dialog" id="edit-expense-dialog" aria-labelledby="edit-dialog-title">
+    <div class="dialog-card">
+      <h2 id="edit-dialog-title">Editar gasto</h2>
+      <p>Corrige los datos del movimiento. El resumen se actualizará al guardar.</p>
+      <form class="dialog-form" id="edit-expense-form">
+        <div class="dialog-fields">
+          <label class="edit-field" for="edit-amount">Importe (€)<input type="number" id="edit-amount" min="0.01" step="0.01" inputmode="decimal" required></label>
+          <label class="edit-field" for="edit-date">Fecha<input type="date" id="edit-date" required></label>
+          <label class="edit-field" for="edit-bank">Cuenta<select id="edit-bank"></select></label>
+          <label class="edit-field" for="edit-category">Categoría<select id="edit-category"></select></label>
+          <label class="edit-field" for="edit-pocket" id="edit-pocket-field" hidden>Bolsillo<select id="edit-pocket"></select></label>
+          <label class="edit-field" for="edit-note">Nota<input type="text" id="edit-note" maxlength="100"></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="tool-button" type="button" id="cancel-edit">Cancelar</button>
+          <button class="save-button" type="submit">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite" data-testid="status-toast"></div>
 
   <script>
     (() => {
       "use strict";
-      const KEYS = { expenses: "gastos-rapidos-expenses-v1", categories: "gastos-rapidos-categories-v1", pockets: "gastos-rapidos-pockets-v1" };
+      const KEYS = { expenses: "gastos-rapidos-expenses-v1", categories: "gastos-rapidos-categories-v1", pockets: "gastos-rapidos-pockets-v1", periodStart: "gastos-rapidos-period-start-v1" };
       const defaults = { categories: ["Alimentación", "Ocio", "Transporte", "Hogar", "Salud", "Otros"], pockets: ["General", "Súper", "Ocio", "Viajes"] };
       const banks = ["Santander", "Bankinter", "Revolut"];
       const safeRead = (key, fallback) => {
@@ -302,6 +446,8 @@
       expenses = expenses.filter(e => e && typeof e.id === "string" && Number.isFinite(Number(e.amount)) && Number(e.amount) > 0 && typeof e.date === "string" && banks.includes(e.bank));
       let selectedBank = "Santander";
       let selectedCategory = categories[0] || "Otros";
+      let periodStart = "";
+      let analysisCategory = null;
       let toastTimer;
       const $ = id => document.getElementById(id);
       const fmt = amount => new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(Number(amount) || 0);
@@ -314,11 +460,34 @@
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
       };
+      const parseDateKey = value => {
+        const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+        if (!match) return null;
+        const date = new Date(Number(match[1]), Number(match[2])-1, Number(match[3]));
+        return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2])-1 && date.getDate() === Number(match[3]) ? date : null;
+      };
+      const isDateKey = value => Boolean(parseDateKey(value));
+      const dateKeyDayNumber = value => {
+        if (!isDateKey(value)) return NaN;
+        const [year, month, day] = value.split("-").map(Number);
+        return Date.UTC(year, month-1, day) / 86400000;
+      };
+      const formatDateKey = (value, options = { day:"numeric", month:"short", year:"numeric" }) => {
+        const date = parseDateKey(value);
+        return date ? new Intl.DateTimeFormat("es-ES", options).format(date) : value;
+      };
+      try {
+        const savedPeriodStart = localStorage.getItem(KEYS.periodStart);
+        periodStart = isDateKey(savedPeriodStart) ? savedPeriodStart : `${dateNow().slice(0,7)}-01`;
+      } catch (_) {
+        periodStart = `${dateNow().slice(0,7)}-01`;
+      }
       const monthKey = date => date.slice(0, 7);
       const persist = () => {
         localStorage.setItem(KEYS.expenses, JSON.stringify(expenses));
         localStorage.setItem(KEYS.categories, JSON.stringify(categories));
         localStorage.setItem(KEYS.pockets, JSON.stringify(pockets));
+        localStorage.setItem(KEYS.periodStart, periodStart);
       };
       const showToast = message => {
         const toast = $("toast");
@@ -376,7 +545,13 @@
         rerender();
       }
       function todayExpenses() { return expenses.filter(e => localDateKey(e.date) === dateNow()); }
-      function monthExpenses() { const key = monthKey(dateNow()); return expenses.filter(e => monthKey(localDateKey(e.date)) === key); }
+      function expensesInRange(from, to) {
+        return expenses.filter(e => {
+          const day = localDateKey(e.date);
+          return day && day >= from && day <= to;
+        });
+      }
+      function monthExpenses() { return expensesInRange(periodStart, dateNow()); }
       function sum(list) { return list.reduce((total, item) => total + Number(item.amount), 0); }
       function summaryRows(map, emptyText, includeZeroRows = false) {
         const rows = [...map.entries()].filter(([, total]) => includeZeroRows || total > 0).sort((a,b) => b[1]-a[1]);
@@ -390,7 +565,8 @@
         $("summary-total").textContent = fmt(sum(monthly));
         $("today-count").textContent = `${todays.length} ${todays.length === 1 ? "movimiento" : "movimientos"}`;
         $("month-count").textContent = `${monthly.length} ${monthly.length === 1 ? "movimiento" : "movimientos"}`;
-        $("month-caption").textContent = new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric" }).format(new Date());
+        $("month-caption").textContent = `Desde el ${formatDateKey(periodStart)} · hasta hoy`;
+        $("cycle-start-summary").textContent = formatDateKey(periodStart);
         const byBank = new Map(banks.map(bank => [bank, 0]));
         const byPocket = new Map(pockets.map(pocket => [pocket, 0]));
         monthly.forEach(item => {
@@ -434,9 +610,170 @@
           persist(); renderAll(); showToast("Movimiento eliminado.");
         }));
       }
-      function renderAll() { renderBanks(); renderPockets(); renderCategories(); renderSummary(); renderHistory(); }
+      function analysisMonthAverage(total, from, to) {
+        const days = Math.max(1, dateKeyDayNumber(to) - dateKeyDayNumber(from) + 1);
+        return total / (days / 30.4375);
+      }
+      function renderCategoryDetail(category, filtered) {
+        const matches = filtered.filter(item => (item.category || "Otros") === category)
+          .sort((a,b) => new Date(b.date) - new Date(a.date));
+        $("detail-category-title").textContent = category;
+        $("detail-category-total").textContent = `${fmt(sum(matches))} · ${matches.length} ${matches.length === 1 ? "movimiento" : "movimientos"}`;
+        $("analysis-expense-list").innerHTML = matches.length ? matches.map(item => {
+          const bankPocket = item.bank === "Revolut" ? `${item.bank} · ${item.pocket || "General"}` : item.bank;
+          return `<li class="analysis-expense" data-testid="analysis-expense-${escapeHTML(item.id)}">
+            <div class="analysis-expense-main">
+              <div class="analysis-expense-title">${escapeHTML(item.note || item.category || "Gasto")}</div>
+              <div class="analysis-expense-meta">${escapeHTML(formatDateKey(localDateKey(item.date)))} · ${escapeHTML(bankPocket)}</div>
+            </div>
+            <div class="analysis-expense-amount">${fmt(item.amount)}</div>
+            <button class="tool-button" type="button" data-edit-expense="${escapeHTML(item.id)}" aria-label="Editar gasto ${escapeHTML(item.note || fmt(item.amount))}">Editar</button>
+          </li>`;
+        }).join("") : `<li class="empty-state"><strong>No hay gastos de esta categoría</strong><span>Prueba con otras fechas o vuelve a la lista de categorías.</span></li>`;
+      }
+      function renderAnalysis() {
+        const from = $("analysis-from").value;
+        const to = $("analysis-to").value;
+        if (!isDateKey(from) || !isDateKey(to) || from > to) return;
+        const filtered = expensesInRange(from, to);
+        $("analysis-total-value").textContent = fmt(sum(filtered));
+        const days = Math.max(1, dateKeyDayNumber(to) - dateKeyDayNumber(from) + 1);
+        $("analysis-period-note").textContent = `${formatDateKey(from)} – ${formatDateKey(to)} · ${days} días. El promedio mensual se estima según la duración del período.`;
+        const names = new Set(categories);
+        filtered.forEach(item => names.add(item.category || "Otros"));
+        const totals = new Map([...names].map(name => [name, 0]));
+        filtered.forEach(item => totals.set(item.category || "Otros", (totals.get(item.category || "Otros") || 0) + Number(item.amount)));
+        const sorted = [...totals.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], "es"));
+        $("category-analysis-list").innerHTML = sorted.map(([name,total]) => `
+          <button class="analysis-category" type="button" data-analysis-category="${escapeHTML(name)}" aria-label="Ver detalle de ${escapeHTML(name)}">
+            <span class="analysis-category-name">${escapeHTML(name)}</span>
+            <span class="analysis-category-metric"><span>Total</span><strong>${fmt(total)}</strong></span>
+            <span class="analysis-category-metric"><span>Promedio / mes</span><strong>${fmt(analysisMonthAverage(total, from, to))}</strong></span>
+            <span class="analysis-chevron" aria-hidden="true">›</span>
+          </button>`).join("") || `<div class="empty-state"><strong>No hay categorías</strong><span>Añade categorías desde la pantalla de gastos.</span></div>`;
+        $("category-analysis-list").hidden = Boolean(analysisCategory);
+        $("category-detail").hidden = !analysisCategory;
+        if (analysisCategory) renderCategoryDetail(analysisCategory, filtered);
+      }
+      function openAnalysis() {
+        $("main-grid").hidden = true;
+        $("history-card").hidden = true;
+        $("analysis-screen").hidden = false;
+        $("analysis-from").value = periodStart;
+        $("analysis-to").value = dateNow();
+        analysisCategory = null;
+        renderAnalysis();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function closeAnalysis() {
+        $("analysis-screen").hidden = true;
+        $("main-grid").hidden = false;
+        $("history-card").hidden = false;
+        analysisCategory = null;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function openExpenseEditor(id) {
+        const item = expenses.find(expense => expense.id === id);
+        if (!item) return;
+        $("edit-amount").value = String(item.amount);
+        $("edit-date").value = localDateKey(item.date);
+        $("edit-bank").innerHTML = banks.map(bank => `<option value="${escapeHTML(bank)}">${escapeHTML(bank)}</option>`).join("");
+        $("edit-bank").value = item.bank;
+        const editCategories = [...new Set([...categories, item.category || "Otros"])];
+        $("edit-category").innerHTML = editCategories.map(name => `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`).join("");
+        $("edit-category").value = item.category || "Otros";
+        const editPockets = [...new Set([...pockets, item.pocket || "General"])];
+        $("edit-pocket").innerHTML = editPockets.map(name => `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`).join("");
+        $("edit-pocket").value = item.pocket || "General";
+        $("edit-note").value = item.note || "";
+        $("edit-pocket-field").hidden = item.bank !== "Revolut";
+        $("edit-expense-form").dataset.expenseId = item.id;
+        $("edit-expense-dialog").showModal();
+      }
+      function renderAll() {
+        renderBanks(); renderPockets(); renderCategories(); renderSummary(); renderHistory();
+        if (!$("analysis-screen").hidden) renderAnalysis();
+      }
 
       $("today-date").textContent = new Intl.DateTimeFormat("es-ES", { weekday:"long", day:"numeric", month:"long" }).format(new Date());
+      $("cycle-date-input").max = dateNow();
+      $("open-cycle-dialog").addEventListener("click", () => {
+        $("cycle-date-input").value = periodStart;
+        $("cycle-date-input").max = dateNow();
+        $("cycle-dialog").showModal();
+      });
+      $("cancel-cycle").addEventListener("click", () => $("cycle-dialog").close());
+      $("cycle-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const nextStart = $("cycle-date-input").value;
+        if (!isDateKey(nextStart) || nextStart > dateNow()) {
+          showToast("El inicio debe ser una fecha válida de hoy o anterior.");
+          return;
+        }
+        periodStart = nextStart;
+        persist();
+        $("cycle-dialog").close();
+        renderAll();
+        showToast("Inicio del período actualizado.");
+      });
+      $("open-analysis").addEventListener("click", openAnalysis);
+      $("back-to-expenses").addEventListener("click", closeAnalysis);
+      $("apply-analysis").addEventListener("click", () => {
+        const from = $("analysis-from").value;
+        const to = $("analysis-to").value;
+        if (!isDateKey(from) || !isDateKey(to)) return showToast("Elige una fecha de inicio y otra de fin.");
+        if (from > to) return showToast("La fecha de inicio no puede ser posterior a la fecha de fin.");
+        analysisCategory = null;
+        renderAnalysis();
+      });
+      $("category-analysis-list").addEventListener("click", event => {
+        const button = event.target.closest("[data-analysis-category]");
+        if (!button) return;
+        analysisCategory = button.dataset.analysisCategory;
+        renderAnalysis();
+      });
+      $("back-to-categories").addEventListener("click", () => {
+        analysisCategory = null;
+        renderAnalysis();
+      });
+      $("analysis-expense-list").addEventListener("click", event => {
+        const button = event.target.closest("[data-edit-expense]");
+        if (button) openExpenseEditor(button.dataset.editExpense);
+      });
+      $("edit-bank").addEventListener("change", () => {
+        $("edit-pocket-field").hidden = $("edit-bank").value !== "Revolut";
+      });
+      $("cancel-edit").addEventListener("click", () => $("edit-expense-dialog").close());
+      $("edit-expense-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const id = $("edit-expense-form").dataset.expenseId;
+        const item = expenses.find(expense => expense.id === id);
+        if (!item) {
+          $("edit-expense-dialog").close();
+          showToast("No se encontró ese movimiento.");
+          return;
+        }
+        const amount = Number($("edit-amount").value.replace(",", "."));
+        const dateValue = $("edit-date").value;
+        const bank = $("edit-bank").value;
+        const category = $("edit-category").value;
+        if (!Number.isFinite(amount) || amount <= 0 || !isDateKey(dateValue) || !banks.includes(bank) || !category) {
+          showToast("Revisa el importe, la fecha, la cuenta y la categoría.");
+          return;
+        }
+        const localDate = parseDateKey(dateValue);
+        localDate.setHours(12, 0, 0, 0);
+        item.amount = Math.round(amount * 100) / 100;
+        item.date = localDate.toISOString();
+        item.bank = bank;
+        item.pocket = bank === "Revolut" ? $("edit-pocket").value || "General" : "";
+        item.category = category;
+        item.note = $("edit-note").value.trim().slice(0, 100);
+        persist();
+        $("edit-expense-dialog").close();
+        renderAll();
+        showToast("Movimiento actualizado.");
+      });
       $("manage-categories").addEventListener("click", () => addOrRemoveItem(categories, "categorías", KEYS.categories, renderCategories));
       $("add-pocket").addEventListener("click", () => {
         const answer = window.prompt("Nombre del nuevo bolsillo:");
